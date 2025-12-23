@@ -63,3 +63,9 @@ test/types/index.js
 
 # compiled app
 dist
+
+# env files
+.env.*
+*.env
+*.env.*
+!.env.example

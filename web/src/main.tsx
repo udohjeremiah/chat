@@ -11,7 +11,7 @@ import reportWebVitals from "./report-web-vitals.ts";
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  context: {},
+  context: { user: undefined },
   defaultPreload: "intent",
   scrollRestoration: true,
   defaultStructuralSharing: true,

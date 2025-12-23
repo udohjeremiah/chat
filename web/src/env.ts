@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    SERVER_URL: z.string().url().optional(),
+    SERVER_URL: z.url().optional(),
   },
 
   /**
@@ -13,7 +13,9 @@ export const env = createEnv({
   clientPrefix: "VITE_",
 
   client: {
-    VITE_APP_TITLE: z.string().min(1).optional(),
+    VITE_APP_TITLE: z.string().min(1),
+    VITE_SERVER_URL: z.url().min(1),
+    VITE_SERVER_API_URL: z.url().min(1),
   },
 
   /**

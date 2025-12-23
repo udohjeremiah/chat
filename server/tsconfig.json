@@ -1,6 +1,7 @@
 {
   "extends": ["../tsconfig.base.json", "fastify-tsconfig"],
   "compilerOptions": {
+    "rootDir": "src",
     "outDir": "dist",
     "sourceMap": true,
     "moduleResolution": "NodeNext",
