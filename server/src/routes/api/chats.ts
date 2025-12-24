@@ -254,59 +254,6 @@ const chats: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
   });
 
   fastify.route({
-    method: "POST",
-    url: "/upload-file",
-    schema: {
-      response: {
-        default: defaultResponseSchema,
-        200: defaultResponseSchema.extend({
-          data: z.object({
-            url: z.url(),
-            publicId: z.string(),
-          }),
-        }),
-      },
-    },
-    handler: async function (request, reply) {
-      if (!request.authUser) {
-        return reply.code(401).send({
-          success: false,
-          message: "Access denied",
-        });
-      }
-
-      let uploaded: { url: string; publicId: string } | undefined;
-
-      for await (const part of request.parts()) {
-        if (part.type === "file") {
-          const buffer = await part.toBuffer();
-
-          if (part.fieldname === "voice") {
-            uploaded = await fastify.uploadToCloudinary(buffer, "chat/voices");
-          }
-
-          if (part.fieldname === "image") {
-            uploaded = await fastify.uploadToCloudinary(buffer, "chat/images");
-          }
-        }
-      }
-
-      if (!uploaded) {
-        return reply.code(400).send({
-          success: false,
-          message: "File must be a voice or image",
-        });
-      }
-
-      reply.code(200).send({
-        success: true,
-        message: "File uploaded successfully",
-        data: uploaded,
-      });
-    },
-  });
-
-  fastify.route({
     method: "GET",
     url: "/start-new-chat/:username",
     schema: {

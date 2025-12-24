@@ -16,6 +16,9 @@ export const env = createEnv({
     VITE_APP_TITLE: z.string().min(1),
     VITE_SERVER_URL: z.url().min(1),
     VITE_SERVER_API_URL: z.url().min(1),
+    VITE_CLOUDINARY_UPLOAD_URL: z.url().min(1),
+    VITE_CLOUDINARY_CLOUD_NAME: z.string().min(1),
+    VITE_CLOUDINARY_UPLOAD_PRESET: z.string().min(1),
   },
 
   /**

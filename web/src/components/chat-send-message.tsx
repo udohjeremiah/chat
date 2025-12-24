@@ -12,7 +12,7 @@ import { VoiceVisualizer, useVoiceVisualizer } from "react-voice-visualizer";
 import { useDebounce } from "@uidotdev/usehooks";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/providers/app-provider";
-import { uploadFile } from "@/services/chats/upload-file";
+import { uploadToCloudinary } from "@/services/chats/upload-to-cloudinary";
 
 export default function ChatSendMessage() {
   const [text, setText] = useState("");
@@ -51,19 +51,10 @@ export default function ChatSendMessage() {
         let voice, image;
 
         if (message.voice) {
-          const formData = new FormData();
-          formData.append("voice", message.voice, "voice.webm");
-
-          const result = await uploadFile(formData);
-          voice = result.data;
+          voice = await uploadToCloudinary(message.voice);
         } else if (message.image) {
           emit.uploading.start(receiverId);
-
-          const formData = new FormData();
-          formData.append("image", message.image);
-
-          const result = await uploadFile(formData);
-          image = result.data;
+          image = await uploadToCloudinary(message.image);
         }
 
         emit.message.send({
