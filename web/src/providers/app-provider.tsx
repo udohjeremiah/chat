@@ -122,25 +122,30 @@ export default function AppProvider({ children }: AppProviderProps) {
       try {
         const result = await getChat(userId);
 
-        setApp((prev) => ({
-          ...prev,
-          chatList: {
-            ...prev.chatList,
-            [userId]: {
-              ...prev.chatList![userId],
-              lastMessage: result.data.chat.at(-1),
-              unreadMessages: 0,
+        setApp((prev) => {
+          const existingChat = prev.chatList?.[userId];
+          if (!existingChat) return prev;
+
+          return {
+            ...prev,
+            chatList: {
+              ...prev.chatList,
+              [userId]: {
+                ...existingChat,
+                lastMessage: result.data.chat.at(-1),
+                unreadMessages: 0,
+              },
             },
-          },
-          chatLoaded: {
-            ...prev.chatLoaded,
-            [userId]: true,
-          },
-          chat: {
-            ...prev.chat,
-            [userId]: result.data.chat,
-          },
-        }));
+            chatLoaded: {
+              ...prev.chatLoaded,
+              [userId]: true,
+            },
+            chat: {
+              ...prev.chat,
+              [userId]: result.data.chat,
+            },
+          };
+        });
       } catch (error) {
         console.error(formatServiceError(error));
       }

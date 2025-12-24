@@ -12,41 +12,42 @@ export const handleMessageSent = (
 
     setApp((prev) => {
       const isOwnMessage = message.senderId === prev.user?._id;
-      const isOldChat = !!prev.chatList?.[chatUserId];
       const isActiveChat = prev.activeChatUserId === chatUserId;
 
-      const chatList = { ...prev.chatList };
-      const chat = { ...prev.chat };
+      const existingChat = prev.chatList?.[chatUserId];
 
-      if (!isOldChat) {
-        chatList[chatUserId] = {
-          user,
-          isOnline: false,
-          lastMessage: undefined,
-          unreadMessages: 0,
-          typing: false,
-          recording: false,
-          uploading: false,
-        };
-      }
-
-      chatList[chatUserId] = {
-        ...chatList[chatUserId],
-        lastMessage: message,
-        unreadMessages:
-          isOwnMessage || isActiveChat
-            ? 0
-            : chatList[chatUserId].unreadMessages + 1,
+      const nextChatList: NonNullable<App["chatList"]> = {
+        ...(prev.chatList ?? {}),
       };
 
-      chat[chatUserId] = [...(chat[chatUserId] ?? []), message];
+      const baseChat = existingChat ?? {
+        user,
+        isOnline: false,
+        lastMessage: undefined,
+        unreadMessages: 0,
+        typing: false,
+        recording: false,
+        uploading: false,
+      };
 
-      if (!isOldChat) socket.emit("presence:get", chatUserId);
+      nextChatList[chatUserId] = {
+        ...baseChat,
+        lastMessage: message,
+        unreadMessages:
+          isOwnMessage || isActiveChat ? 0 : baseChat.unreadMessages + 1,
+      };
+
+      const nextChat: NonNullable<App["chat"]> = {
+        ...(prev.chat ?? {}),
+        [chatUserId]: [...(prev.chat?.[chatUserId] ?? []), message],
+      };
+
+      if (!existingChat) socket.emit("presence:get", chatUserId);
       if (!isOwnMessage && isActiveChat) {
         socket.emit("message:read", chatUserId);
       }
 
-      return { ...prev, chatList, chat };
+      return { ...prev, chatList: nextChatList, chat: nextChat };
     });
   };
 
@@ -65,28 +66,31 @@ export const handleMessagesUpdate = (
 
   const handler = (userId: string) => {
     setApp((prev) => {
-      if (!prev.chatList?.[userId]) return prev;
+      const existingChat = prev.chatList?.[userId];
+      if (!existingChat) return prev;
 
-      const chatList = { ...prev.chatList };
-      const chat = { ...prev.chat };
+      const lastMessage = existingChat.lastMessage;
 
-      const lastMessage = chatList[userId].lastMessage;
-      if (lastMessage) {
-        chatList[userId] = {
-          ...chatList[userId],
-          lastMessage: { ...lastMessage, status },
-          unreadMessages:
-            status === "read" ? 0 : chatList[userId].unreadMessages,
-        };
-      }
+      const nextChatList: NonNullable<App["chatList"]> = {
+        ...prev.chatList,
+        [userId]: lastMessage
+          ? {
+              ...existingChat,
+              lastMessage: { ...lastMessage, status },
+              unreadMessages:
+                status === "read" ? 0 : existingChat.unreadMessages,
+            }
+          : existingChat,
+      };
 
-      chat[userId] = [
-        ...(chat[userId] ?? []).map((msg) =>
+      const nextChat: NonNullable<App["chat"]> = {
+        ...(prev.chat ?? {}),
+        [userId]: (prev.chat?.[userId] ?? []).map((msg) =>
           STATUS[msg.status] < STATUS[status] ? { ...msg, status } : msg,
         ),
-      ];
+      };
 
-      return { ...prev, chatList, chat };
+      return { ...prev, chatList: nextChatList, chat: nextChat };
     });
   };
 

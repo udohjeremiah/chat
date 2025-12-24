@@ -2,20 +2,20 @@ import type { App } from "@/providers/app-provider";
 import type { Dispatch, SetStateAction } from "react";
 
 export const handlePresenceUsers = (setApp: Dispatch<SetStateAction<App>>) => {
-  const handler = (onlineUserIds: Array<string>) => {
+  const handler = (onlineUserIds: string[]) => {
     setApp((prev) => {
       if (!prev.chatList) return prev;
 
-      const chatList = { ...prev.chatList };
+      const nextChatList: NonNullable<App["chatList"]> = {};
 
-      for (const userId in chatList) {
-        chatList[userId] = {
-          ...chatList[userId],
+      for (const [userId, existingChat] of Object.entries(prev.chatList)) {
+        nextChatList[userId] = {
+          ...existingChat,
           isOnline: onlineUserIds.includes(userId),
         };
       }
 
-      return { ...prev, chatList };
+      return { ...prev, chatList: nextChatList };
     });
   };
 
@@ -27,15 +27,19 @@ export const handlePresenceUser = (setApp: Dispatch<SetStateAction<App>>) => {
     const { userId, isOnline } = payload;
 
     setApp((prev) => {
-      if (!prev.chatList?.[userId]) return prev;
+      const existingChat = prev.chatList?.[userId];
+      if (!existingChat) return prev;
 
-      const chatList = { ...prev.chatList };
-      chatList[userId] = {
-        ...chatList[userId],
-        isOnline,
+      return {
+        ...prev,
+        chatList: {
+          ...prev.chatList,
+          [userId]: {
+            ...existingChat,
+            isOnline,
+          },
+        },
       };
-
-      return { ...prev, chatList };
     });
   };
 
@@ -45,15 +49,19 @@ export const handlePresenceUser = (setApp: Dispatch<SetStateAction<App>>) => {
 export const handlePresenceOn = (setApp: Dispatch<SetStateAction<App>>) => {
   const handler = (userId: string) => {
     setApp((prev) => {
-      if (!prev.chatList?.[userId]) return prev;
+      const existingChat = prev.chatList?.[userId];
+      if (!existingChat) return prev;
 
-      const chatList = { ...prev.chatList };
-      chatList[userId] = {
-        ...chatList[userId],
-        isOnline: true,
+      return {
+        ...prev,
+        chatList: {
+          ...prev.chatList,
+          [userId]: {
+            ...existingChat,
+            isOnline: true,
+          },
+        },
       };
-
-      return { ...prev, chatList };
     });
   };
 
@@ -63,15 +71,19 @@ export const handlePresenceOn = (setApp: Dispatch<SetStateAction<App>>) => {
 export const handlePresenceOff = (setApp: Dispatch<SetStateAction<App>>) => {
   const handler = (userId: string) => {
     setApp((prev) => {
-      if (!prev.chatList?.[userId]) return prev;
+      const existingChat = prev.chatList?.[userId];
+      if (!existingChat) return prev;
 
-      const chatList = { ...prev.chatList };
-      chatList[userId] = {
-        ...chatList[userId],
-        isOnline: false,
+      return {
+        ...prev,
+        chatList: {
+          ...prev.chatList,
+          [userId]: {
+            ...existingChat,
+            isOnline: false,
+          },
+        },
       };
-
-      return { ...prev, chatList };
     });
   };
 

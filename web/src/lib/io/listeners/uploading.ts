@@ -4,15 +4,19 @@ import type { Dispatch, SetStateAction } from "react";
 export const handleUploadingStart = (setApp: Dispatch<SetStateAction<App>>) => {
   const handler = (userId: string) => {
     setApp((prev) => {
-      if (!prev.chatList?.[userId]) return prev;
+      const existingChat = prev.chatList?.[userId];
+      if (!existingChat) return prev;
 
-      const chatList = { ...prev.chatList };
-      chatList[userId] = {
-        ...chatList[userId],
-        uploading: true,
+      return {
+        ...prev,
+        chatList: {
+          ...prev.chatList,
+          [userId]: {
+            ...existingChat,
+            uploading: true,
+          },
+        },
       };
-
-      return { ...prev, chatList };
     });
   };
 
@@ -22,15 +26,19 @@ export const handleUploadingStart = (setApp: Dispatch<SetStateAction<App>>) => {
 export const handleUploadingStop = (setApp: Dispatch<SetStateAction<App>>) => {
   const handler = (userId: string) => {
     setApp((prev) => {
-      if (!prev.chatList?.[userId]) return prev;
+      const existingChat = prev.chatList?.[userId];
+      if (!existingChat) return prev;
 
-      const chatList = { ...prev.chatList };
-      chatList[userId] = {
-        ...chatList[userId],
-        uploading: false,
+      return {
+        ...prev,
+        chatList: {
+          ...prev.chatList,
+          [userId]: {
+            ...existingChat,
+            uploading: false,
+          },
+        },
       };
-
-      return { ...prev, chatList };
     });
   };
 

@@ -4,15 +4,19 @@ import type { Dispatch, SetStateAction } from "react";
 export const handleRecordingStart = (setApp: Dispatch<SetStateAction<App>>) => {
   const handler = (userId: string) => {
     setApp((prev) => {
-      if (!prev.chatList?.[userId]) return prev;
+      const existingChat = prev.chatList?.[userId];
+      if (!existingChat) return prev;
 
-      const chatList = { ...prev.chatList };
-      chatList[userId] = {
-        ...chatList[userId],
-        recording: true,
+      return {
+        ...prev,
+        chatList: {
+          ...prev.chatList,
+          [userId]: {
+            ...existingChat,
+            recording: true,
+          },
+        },
       };
-
-      return { ...prev, chatList };
     });
   };
 
@@ -22,15 +26,19 @@ export const handleRecordingStart = (setApp: Dispatch<SetStateAction<App>>) => {
 export const handleRecordingStop = (setApp: Dispatch<SetStateAction<App>>) => {
   const handler = (userId: string) => {
     setApp((prev) => {
-      if (!prev.chatList?.[userId]) return prev;
+      const existingChat = prev.chatList?.[userId];
+      if (!existingChat) return prev;
 
-      const chatList = { ...prev.chatList };
-      chatList[userId] = {
-        ...chatList[userId],
-        recording: false,
+      return {
+        ...prev,
+        chatList: {
+          ...prev.chatList,
+          [userId]: {
+            ...existingChat,
+            recording: false,
+          },
+        },
       };
-
-      return { ...prev, chatList };
     });
   };
 
