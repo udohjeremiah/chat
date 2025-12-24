@@ -6,7 +6,6 @@ declare module "fastify" {
     env: {
       NODE_ENV: string;
       NAME: string;
-      PORT: number;
       JWT_SECRET: string;
       MONGODB_URL: string;
       MONGODB_DATABASE: string;
@@ -25,7 +24,6 @@ const options: FastifyEnvOptions = {
     required: [
       "NODE_ENV",
       "NAME",
-      "PORT",
       "JWT_SECRET",
       "MONGODB_URL",
       "MONGODB_DATABASE",
@@ -42,10 +40,6 @@ const options: FastifyEnvOptions = {
       NAME: {
         type: "string",
         default: "Server",
-      },
-      PORT: {
-        type: "number",
-        default: 3000,
       },
       JWT_SECRET: {
         type: "string",
