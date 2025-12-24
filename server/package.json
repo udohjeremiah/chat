@@ -1,8 +1,7 @@
 {
-  "type": "module",
   "name": "server",
-  "version": "1.0.0",
-  "description": "This project was bootstrapped with Fastify-CLI.",
+  "private": true,
+  "type": "module",
   "main": "app.ts",
   "imports": {
     "#*": "./dist/*"
@@ -13,17 +12,14 @@
     "watch:ts": "tsc -w",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
     "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js",
-    "docker:start": "docker-compose -f compose.dev.yaml up -d",
-    "docker:build": "docker-compose -f compose.dev.yaml build",
-    "docker:build:nocache": "docker-compose -f compose.dev.yaml build --no-cache",
-    "docker:clean": "docker-compose -f compose.dev.yaml down",
-    "docker:clean:images": "docker-compose -f compose.dev.yaml down --rmi all",
-    "docker:clean:volumes": "docker-compose -f compose.dev.yaml down -v",
-    "docker:clean:all": "docker-compose -f compose.dev.yaml down --rmi all -v"
+    "docker:start": "docker compose -f compose.dev.yaml up -d",
+    "docker:build": "docker compose -f compose.dev.yaml build",
+    "docker:build:nocache": "docker compose -f compose.dev.yaml build --no-cache",
+    "docker:clean": "docker compose -f compose.dev.yaml down",
+    "docker:clean:images": "docker compose -f compose.dev.yaml down --rmi all",
+    "docker:clean:volumes": "docker compose -f compose.dev.yaml down -v",
+    "docker:clean:all": "docker compose -f compose.dev.yaml down --rmi all -v"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@dicebear/collection": "^9.2.4",
     "@dicebear/core": "^9.2.4",
@@ -32,12 +28,14 @@
     "@fastify/env": "^5.0.3",
     "@fastify/jwt": "^10.0.0",
     "@fastify/mongodb": "^9.0.2",
-    "@fastify/sensible": "^6.0.0",
+    "@fastify/multipart": "^9.3.0",
     "bcryptjs": "^3.0.3",
     "fastify": "^5.0.0",
     "fastify-cli": "^7.4.1",
+    "fastify-cloudinary": "^2.0.0",
     "fastify-plugin": "^5.0.0",
     "fastify-type-provider-zod": "^6.1.0",
+    "socket.io": "^4.8.3",
     "zod": "^4.2.1",
     "zod-to-mongo-schema": "^1.1.2"
   },

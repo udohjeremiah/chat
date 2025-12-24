@@ -26,14 +26,14 @@ export default fp(
         await request.jwtVerify();
 
         const database = fastify.getDatabase();
+        const usersCollection = database.collection<UserWithoutPassword>(
+          fastify.env.MONGODB_COLL_USERS,
+        );
 
-        const user = await database
-          .collection<UserWithoutPassword>(fastify.env.MONGODB_COLL_USERS)
-          .findOne(
-            { _id: new ObjectId(request.user.userId) },
-            { projection: { password: 0 } },
-          );
-
+        const user = await usersCollection.findOne(
+          { _id: new ObjectId(request.user.userId) },
+          { projection: { password: 0 } },
+        );
         if (!user) {
           return reply.code(401).send({
             success: false,

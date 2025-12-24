@@ -1,5 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import ChatContainer from "@/components/chat-container";
+import Chats from "@/components/chats";
+import Chat from "@/components/chat";
 
 export const Route = createFileRoute("/")({
   beforeLoad: ({ context }) => {
@@ -16,7 +18,8 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   return (
     <ChatContainer>
-      <></>
+      <Chats />
+      <Chat />
     </ChatContainer>
   );
 }

@@ -4,12 +4,16 @@ import fp from "fastify-plugin";
 declare module "fastify" {
   export interface FastifyInstance {
     env: {
+      NODE_ENV: string;
       NAME: string;
       PORT: number;
       JWT_SECRET: string;
       MONGODB_URL: string;
       MONGODB_DATABASE: string;
       MONGODB_COLL_USERS: string;
+      MONGODB_COLL_MESSAGES: string;
+      CLOUDINARY_URL: string;
+      CLIENT_URL: string;
     };
   }
 }
@@ -19,14 +23,22 @@ const options: FastifyEnvOptions = {
   schema: {
     type: "object",
     required: [
+      "NODE_ENV",
       "NAME",
       "PORT",
       "JWT_SECRET",
       "MONGODB_URL",
       "MONGODB_DATABASE",
       "MONGODB_COLL_USERS",
+      "MONGODB_COLL_MESSAGES",
+      "CLOUDINARY_URL",
+      "CLIENT_URL",
     ],
     properties: {
+      NODE_ENV: {
+        type: "string",
+        default: "development",
+      },
       NAME: {
         type: "string",
         default: "Server",
@@ -50,6 +62,18 @@ const options: FastifyEnvOptions = {
       MONGODB_COLL_USERS: {
         type: "string",
         default: "my-users",
+      },
+      MONGODB_COLL_MESSAGES: {
+        type: "string",
+        default: "my-messages",
+      },
+      CLOUDINARY_URL: {
+        type: "string",
+        default: "my-cloudinary-url",
+      },
+      CLIENT_URL: {
+        type: "string",
+        default: "*",
       },
     },
   },

@@ -28,6 +28,26 @@ export default fp(
             ),
           },
         },
+        messages: {
+          validator: {
+            $jsonSchema: zodToMongoSchema(
+              z.object({
+                _id: z.unknown().meta({ bsonType: "objectId" }),
+                senderId: z.unknown().meta({ bsonType: "objectId" }),
+                receiverId: z.unknown().meta({ bsonType: "objectId" }),
+                text: z.string().optional(),
+                voice: z
+                  .object({ url: z.url(), publicId: z.string() })
+                  .optional(),
+                image: z
+                  .object({ url: z.url(), publicId: z.string() })
+                  .optional(),
+                status: z.enum(["sent", "delivered", "read"]),
+                sentAt: z.unknown().meta({ bsonType: "date" }),
+              }),
+            ),
+          },
+        },
       };
 
       // Loop through and create each collection if missing

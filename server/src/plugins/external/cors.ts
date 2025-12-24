@@ -9,6 +9,8 @@ import fp from "fastify-plugin";
 export default fp<FastifyCorsOptions>(
   async (fastify) => {
     fastify.register(cors, {
+      origin:
+        fastify.env.NODE_ENV === "production" ? fastify.env.CLIENT_URL : "*",
       methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     });
   },

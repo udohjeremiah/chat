@@ -51,7 +51,7 @@ function RouteComponent() {
         password: formData.get("password") as string,
       });
 
-      localStorage.setItem("token", result.data.token);
+      localStorage.setItem("jwt", result.data.token);
       router.invalidate();
       router.navigate({ to: "/", reloadDocument: true });
 

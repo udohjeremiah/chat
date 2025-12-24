@@ -3,14 +3,15 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { User } from "@/schemas/user";
 import { verify } from "@/services/auth/verify";
+import AppProvider from "@/providers/app-provider";
 
 interface RouterContext {
-  user: User | undefined;
+  user?: User;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context }) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwt");
     if (!token) return;
 
     try {
@@ -23,7 +24,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   },
   component: () => (
     <>
-      <Outlet />
+      <AppProvider>
+        <Outlet />
+      </AppProvider>
       <TanStackDevtools
         config={{
           position: "bottom-right",

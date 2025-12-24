@@ -33,11 +33,11 @@ const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
       const { name, username, password } = request.body;
 
       const database = fastify.getDatabase();
-      const collection = database.collection<UserWithoutId>(
+      const usersCollection = database.collection<UserWithoutId>(
         fastify.env.MONGODB_COLL_USERS,
       );
 
-      const user = await collection.findOne({ username });
+      const user = await usersCollection.findOne({ username });
       if (user) {
         return reply.code(400).send({
           success: false,
@@ -61,7 +61,7 @@ const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
         createdAt: new Date(),
       };
 
-      await collection.insertOne(newUser);
+      await usersCollection.insertOne(newUser);
 
       reply.code(201).send({
         success: true,
@@ -89,11 +89,11 @@ const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
       const { username, password } = request.body;
 
       const database = fastify.getDatabase();
-      const collection = database.collection<User>(
+      const usersCollection = database.collection<User>(
         fastify.env.MONGODB_COLL_USERS,
       );
 
-      const user = await collection.findOne({ username });
+      const user = await usersCollection.findOne({ username });
       if (!user) {
         return reply.code(404).send({
           success: false,
