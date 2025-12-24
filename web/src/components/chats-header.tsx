@@ -1,7 +1,7 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { SearchIcon } from "@hugeicons/core-free-icons";
 import type { Dispatch, SetStateAction } from "react";
-import { NewChatDialog } from "@/components/new-chat-dialog";
+import NewChatDialog from "@/components/new-chat-dialog";
 import {
   InputGroup,
   InputGroupAddon,
