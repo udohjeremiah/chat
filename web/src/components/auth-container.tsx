@@ -6,7 +6,7 @@ interface AuthContainerProps {
 
 export default function AuthContainer({ children }: AuthContainerProps) {
   return (
-    <main className="flex h-screen max-w-screen items-center justify-center px-[5%] sm:px-[15%] lg:px-[20%]">
+    <main className="flex h-svh max-w-screen items-center justify-center px-[5%] sm:px-[15%] lg:px-[20%]">
       <div className="w-full overflow-hidden rounded-3xl border">
         <div className="grid size-full lg:grid-cols-2">
           <div className="flex items-center justify-center">
