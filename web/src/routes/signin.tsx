@@ -7,7 +7,7 @@ import {
 import { useActionState } from "react";
 import AuthContainer from "@/components/auth-container";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { LockPasswordIcon } from "@hugeicons/core-free-icons";
+import { AlertCircleIcon, LockPasswordIcon } from "@hugeicons/core-free-icons";
 import {
   Field,
   FieldDescription,
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/input-group";
 import { formatServiceError } from "@/utils/format-service-error";
 import { signIn } from "@/services/auth/signin";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 
 type ActionState =
   | { status: "idle" }
@@ -114,9 +115,10 @@ function RouteComponent() {
             </Button>
           </Field>
           {!pending && state.status === "error" && (
-            <p role="alert" className="text-center text-sm text-destructive">
-              {state.message}
-            </p>
+            <Alert variant="destructive">
+              <HugeiconsIcon icon={AlertCircleIcon} />
+              <AlertTitle>{state.message}</AlertTitle>
+            </Alert>
           )}
           <Field>
             <FieldDescription className="px-6 text-center">

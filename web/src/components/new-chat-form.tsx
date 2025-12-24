@@ -12,6 +12,9 @@ import {
 
 import { useApp } from "@/providers/app-provider";
 import { startNewChat } from "@/services/chats/start-new-chat";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AlertCircleIcon } from "@hugeicons/core-free-icons";
 
 export type ActionState =
   | { status: "idle" }
@@ -105,16 +108,17 @@ export default function NewChatForm({ closeDialog }: NewChatFormProps) {
             />
           </InputGroup>
         </Field>
-        {!pending && state.status === "error" && (
-          <p role="alert" className="text-center text-sm text-destructive">
-            {state.message}
-          </p>
-        )}
         <Field>
           <Button type="submit" disabled={pending} className="w-full">
             {pending ? "Starting chat..." : "Start chat"}
           </Button>
         </Field>
+        {!pending && state.status === "error" && (
+          <Alert variant="destructive">
+            <HugeiconsIcon icon={AlertCircleIcon} />
+            <AlertTitle>{state.message}</AlertTitle>
+          </Alert>
+        )}
       </FieldGroup>
     </form>
   );

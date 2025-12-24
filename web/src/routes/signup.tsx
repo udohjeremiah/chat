@@ -1,7 +1,11 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useActionState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { LockPasswordIcon, UserIcon } from "@hugeicons/core-free-icons";
+import {
+  AlertCircleIcon,
+  LockPasswordIcon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
 import AuthContainer from "@/components/auth-container";
 import {
   Field,
@@ -18,6 +22,7 @@ import {
 } from "@/components/ui/input-group";
 import { formatServiceError } from "@/utils/format-service-error";
 import { signUp } from "@/services/auth/signup";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 
 type ActionState =
   | { status: "idle" }
@@ -122,9 +127,10 @@ function RouteComponent() {
             </Button>
           </Field>
           {!pending && state.status === "error" && (
-            <p role="alert" className="text-center text-sm text-destructive">
-              {state.message}
-            </p>
+            <Alert variant="destructive">
+              <HugeiconsIcon icon={AlertCircleIcon} />
+              <AlertTitle>{state.message}</AlertTitle>
+            </Alert>
           )}
           <Field>
             <FieldDescription className="text-center">
