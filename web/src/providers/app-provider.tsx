@@ -63,13 +63,62 @@ export default function AppProvider({ children }: AppProviderProps) {
   const socketRef = useRef<TypedSocket | undefined>(undefined);
   const emittersRef = useRef<Emitters | undefined>(undefined);
 
+  const rehydrateChats = async (options?: { keepActiveChat?: boolean }) => {
+    if (!app.user) return;
+
+    try {
+      const result = await getChats();
+
+      const chatList: Record<string, Chat> = {};
+      for (const chat of result.data.chats) {
+        chatList[chat.user._id] = {
+          user: chat.user,
+          isOnline: false,
+          lastMessage: chat.lastMessage,
+          unreadMessages: chat.unreadMessages,
+          typing: false,
+          recording: false,
+          uploading: false,
+        };
+      }
+
+      const activeUserId = options?.keepActiveChat
+        ? app.activeChatUserId
+        : undefined;
+
+      if (activeUserId && chatList[activeUserId]) {
+        const chatData = await getChat(activeUserId);
+
+        setApp((prev) => ({
+          ...prev,
+          chatList,
+          chatLoaded: {
+            ...(prev.chatLoaded ?? {}),
+            [activeUserId]: true,
+          },
+          chat: {
+            ...(prev.chat ?? {}),
+            [activeUserId]: chatData.data.chat,
+          },
+          activeChatUserId: activeUserId,
+        }));
+      } else {
+        setApp((prev) => ({ ...prev, chatList }));
+      }
+
+      emittersRef.current?.presence.getAll();
+    } catch (error) {
+      console.error(formatServiceError(error));
+    }
+  };
+
   // Initialize socket and listeners
   useEffect(() => {
     if (!app.user) return;
 
     const socket = ioClient();
-    socketRef.current = socket;
     registerListeners(socket, setApp);
+    socketRef.current = socket;
     emittersRef.current = createEmitters(socket);
 
     return () => {
@@ -82,33 +131,8 @@ export default function AppProvider({ children }: AppProviderProps) {
 
   // Fetch initial chat list
   useEffect(() => {
-    const fetchChats = async () => {
-      if (!app.user) return;
-
-      try {
-        const result = await getChats();
-
-        const chatList: Record<string, Chat> = {};
-        for (const chat of result.data.chats) {
-          chatList[chat.user._id] = {
-            user: chat.user,
-            isOnline: false,
-            lastMessage: chat.lastMessage,
-            unreadMessages: chat.unreadMessages,
-            typing: false,
-            recording: false,
-            uploading: false,
-          };
-        }
-
-        setApp((prev) => ({ ...prev, chatList }));
-        emittersRef.current?.presence.getAll();
-      } catch (error) {
-        console.error(formatServiceError(error));
-      }
-    };
-
-    fetchChats();
+    if (!app.user) return;
+    rehydrateChats();
   }, [app.user]);
 
   // Fetch chat for active user
@@ -173,6 +197,7 @@ export default function AppProvider({ children }: AppProviderProps) {
     if (!app.user) return;
 
     if (debouncedOnline) {
+      rehydrateChats({ keepActiveChat: true });
       emittersRef.current?.presence.on();
     } else {
       emittersRef.current?.presence.off();

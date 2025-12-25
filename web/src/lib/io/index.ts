@@ -20,7 +20,6 @@ import {
   handleUploadingStop,
 } from "./listeners/uploading";
 import { createMessageEmitters } from "./emitters/message";
-import { handleConnect, handleDisconnect } from "./listeners/connection";
 import type { Socket } from "socket.io-client";
 import type { Dispatch, SetStateAction } from "react";
 import type { App } from "@/providers/app-provider";
@@ -89,9 +88,6 @@ export const registerListeners = (
   socket: TypedSocket,
   setApp: Dispatch<SetStateAction<App>>,
 ) => {
-  socket.on("connect", handleConnect(socket));
-  socket.on("disconnect", handleDisconnect(setApp));
-
   socket.on("presence:users", handlePresenceUsers(setApp));
   socket.on("presence:user", handlePresenceUser(setApp));
   socket.on("presence:on", handlePresenceOn(setApp));

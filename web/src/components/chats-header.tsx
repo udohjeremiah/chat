@@ -1,6 +1,7 @@
 import { HugeiconsIcon } from "@hugeicons/react";
 import { SearchIcon } from "@hugeicons/core-free-icons";
 import type { Dispatch, SetStateAction } from "react";
+import NetworkAlert from "@/components/network-alert";
 import NewChatDialog from "@/components/new-chat-dialog";
 import {
   InputGroup,
@@ -20,8 +21,8 @@ export default function ChatsHeader({
   chatsLength,
 }: ChatsHeaderProps) {
   return (
-    <div className="w-full border-b">
-      <div className="flex items-center justify-between gap-2 px-4 py-2">
+    <div className="flex w-full flex-col gap-2 border-b px-4 py-2">
+      <div className="flex items-center justify-between gap-2">
         <InputGroup>
           <InputGroupAddon>
             <HugeiconsIcon icon={SearchIcon} />
@@ -39,6 +40,7 @@ export default function ChatsHeader({
         </InputGroup>
         <NewChatDialog />
       </div>
+      <NetworkAlert />
     </div>
   );
 }
