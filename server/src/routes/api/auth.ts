@@ -52,7 +52,7 @@ const auth: FastifyPluginAsyncZod = async (fastify): Promise<void> => {
       }).toDataUri();
 
       const newUser = {
-        name,
+        name: name.trim(),
         username: username.trim().toLowerCase(),
         password: hashedPassword,
         avatar,
